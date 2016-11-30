@@ -138,6 +138,10 @@ public class Signer {
             return this;
         }
 
+        public Signer build(HttpRequest request, String service, String contentSha256, String region) {
+            return new Signer(new CanonicalRequest(request, getCanonicalHeaders(), contentSha256), getAwsCredentials(), service, region);
+        }
+
         public Signer build(HttpRequest request, String service, String contentSha256) {
             return new Signer(new CanonicalRequest(request, getCanonicalHeaders(), contentSha256), getAwsCredentials(), service, region);
         }
