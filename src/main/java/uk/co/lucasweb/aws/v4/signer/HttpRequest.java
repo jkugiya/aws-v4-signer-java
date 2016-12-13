@@ -12,7 +12,9 @@
  */
 package uk.co.lucasweb.aws.v4.signer;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.util.Optional;
 
 /**
@@ -36,7 +38,18 @@ public class HttpRequest {
         if ("".equals(uri.getPath())) {
             return "/";
         }else {
-            return uri.getPath();
+            String path = uri.getPath().substring(1, uri.getPath().length());
+            try {
+                return "/" +
+                        URLEncoder.encode(path, "UTF-8")
+                        .replaceAll("~", "%7E")
+                        .replaceAll("'", "%27")
+                        .replaceAll("\\(", "%28")
+                        .replaceAll("\\)", "%29")
+                        .replaceAll("\\*", "%2A");
+            } catch (UnsupportedEncodingException e) {
+                throw new SigningException("Failed to encode given path");
+            }
         }
     }
 
